@@ -9,8 +9,8 @@ export const chatWithAssistant = async(userInput )=>{
         ],
         model : "gpt-3.5-turbo"
     });
-    console.log(completion)
-    return completion.choices[0].messages.content;
+    console.log("gptChatResponse : ",completion)
+    return completion.choices[0].message.content;
 }
 
 

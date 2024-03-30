@@ -30,11 +30,8 @@ const getModelMap = (dropArray , mapArray)=>{
 export const modelDataFrontend = asyncHandler(async(req, res , next) =>{
    
     try {
-        console.log("bla")
-        console.log(req.body);
         const {dropArray , mapArray} = req.body;
         const modelArray = getModelMap(dropArray , mapArray);
-        console.log(modelArray);
         req.modelFlow = modelArray;
         next();
     } catch (error) {
