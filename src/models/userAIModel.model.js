@@ -24,15 +24,20 @@ const userAIModelSchema = new Schema(
 
         userId : {
             type : Schema.Types.ObjectId,
-            ref : "User"
+            ref : "User",
+            index : true
         },
-        modelUrl :{
+        modelDescription :{
             type : String ,
-            default : ""
+            required : true
         },
         modelFlow :[
             mongoose.Schema.Types.Mixed
-        ]
+        ],
+        modelUrl :{
+            type :String,
+            default : null
+        }
 
     } , {timestamps :true})
 

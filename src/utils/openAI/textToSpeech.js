@@ -5,10 +5,10 @@ import { uplaodOnCloudinary } from "../cloudinary.js";
 
 const speechile =  path.resolve(`./public/temp/${Date()}.mp3`)
 
-export const convertTextToSpeech = async(inputText ) =>{
+export const convertTextToSpeech = async(inputText ,voice ) =>{
     const mp3 = await openAi.audio.speech.create({
         model : "tts-1",
-        voice : "alloy",
+        voice : voice,
         input : inputText
     })
     console.log("File Path :" , speechile);

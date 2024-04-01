@@ -4,6 +4,8 @@ import { User } from "../models/user.model.js";
 import { uplaodOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { options } from "../utils/options.js";
+import bcrypt from "bcrypt"
+
 
 const generateAccessToken = async(userId) =>{
     try {
@@ -30,15 +32,15 @@ const registerUser = asyncHandler(async(req, res)=>{
         throw new ApiError(400 , "All fields are required" )
     }
 
-    const existedUser = await User.findOne(email)
+    const existedUser = await User.findOne({email})
     if(existedUser){
         throw new ApiError(409 , "user with email or username already exists")
     }
-
+    const passwordHash = await bcrypt.hash(password , 10)
     const user = await User.create({
         fullName, 
         email,
-        password
+        password: passwordHash
     })
 
     const createdUser = await User.findById(user._id).select(
@@ -63,7 +65,7 @@ const loginUser = asyncHandler(async(req , res)=>{
         throw new ApiError(400 , "username or email is required");
     }
 
-    const user = await User.findOne(email);
+    const user = await User.findOne({email});
 
     if(!user){
         throw new ApiError(404 , "user does not exist.")

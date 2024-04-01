@@ -6,9 +6,9 @@ const router = Router()
 
 router.route("/register").post(registerUser)
 router.route("/login").post(loginUser);
-router.route("/changePassword" , verifyJwt , changeCurrentPassword);
-router.route("/getCurrentUser" , verifyJwt , getCurrentUser);
-router.route("/updateAccount" , verifyJwt , updateAccountDetails);
+router.route("/changePassword").post(verifyJwt , changeCurrentPassword);
+router.route("/getCurrentUser" ).get(verifyJwt , getCurrentUser);
+router.route("/updateAccount").put(verifyJwt , updateAccountDetails);
 
 
 //secured routes

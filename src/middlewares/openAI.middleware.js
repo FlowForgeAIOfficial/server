@@ -1,5 +1,7 @@
 import { APIError } from "openai";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { UserAIModel } from "../models/userAIModel.model.js";
+import functionAndCodes from "../utils/openAI/functionAndCodes.js";
 
 const getModelMap = (dropArray , mapArray)=>{
     let values = new Array(dropArray.length);
@@ -20,21 +22,37 @@ const getModelMap = (dropArray , mapArray)=>{
     for(let i=0 ; i<map.length ; i++){
         finalMap.push(Object.keys(map[i])[0]) 
     }
-    finalMap.push('output')
     console.log(finalMap)
+    finalMap.push('output')
+    
     return finalMap;
 }
 
-
-
-export const modelDataFrontend = asyncHandler(async(req, res , next) =>{
+export const generateModelDescriptionArray = asyncHandler(async(req, res , next) =>{
    
     try {
         const {dropArray , mapArray} = req.body;
         const modelArray = getModelMap(dropArray , mapArray);
         req.modelFlow = modelArray;
+        var modelDetailsArray = []
+        for(let i=0 ; i<modelArray.length ; i++){
+            functionAndCodes(modelArray[i] ,req , modelDetailsArray) 
+        }
+        const userAiModel = await UserAIModel.create({
+            userId : req.user._id,
+            modelDescription : req.body.modelDescription,
+            modelFlow : modelDetailsArray
+        })
+        
+        const modelId = userAiModel._id;
+        req.modelId = modelId;
         next();
     } catch (error) {
         throw new APIError(500 , error , "Cannot get model data flow.")
     }
 });
+
+
+
+
+

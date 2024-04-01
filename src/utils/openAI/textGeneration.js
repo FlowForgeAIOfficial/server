@@ -1,10 +1,10 @@
 import { openAi } from "../../constants.js";
 
-export const chatWithAssistant = async(userInput )=>{
-    console.log(userInput)
+export const chatWithAssistant = async(userInput , modelDescription)=>{
+    
     const completion = await openAi.chat.completions.create({
         messages :[
-            {"role" : "system" , "content" : "act as an assistant"},
+            {"role" : "system" , "content" : modelDescription},
             {"role" : "user" , "content" : userInput }
         ],
         model : "gpt-3.5-turbo"

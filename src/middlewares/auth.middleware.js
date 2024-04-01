@@ -10,7 +10,7 @@ export const verifyJwt = asyncHandler(async(req , res , next) =>{
             throw new ApiError(401 , "Unauthorized request")
         }
     
-        const decodedToken =  jwt.verify(token , processs.env.ACCESS_TOKEN_SECRET);
+        const decodedToken =  jwt.verify(token ,"lanthai");
         
         const user = await User.findById(decodedToken?._id).select("-password ");
     
