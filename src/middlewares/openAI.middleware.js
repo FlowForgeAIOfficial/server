@@ -31,21 +31,14 @@ const getModelMap = (dropArray , mapArray)=>{
 export const generateModelDescriptionArray = asyncHandler(async(req, res , next) =>{
    
     try {
-        const {dropArray , mapArray} = req.body;
+        const {dropArray , mapArray , modelId} = req.body;
         const modelArray = getModelMap(dropArray , mapArray);
         req.modelFlow = modelArray;
         var modelDetailsArray = []
         for(let i=0 ; i<modelArray.length ; i++){
             functionAndCodes(modelArray[i] ,req , modelDetailsArray) 
         }
-        const userAiModel = await UserAIModel.create({
-            userId : req.user._id,
-            modelDescription : req.body.modelDescription,
-            modelFlow : modelDetailsArray
-        })
-        
-        const modelId = userAiModel._id;
-        req.modelId = modelId;
+        req.modelFlow = modelDetailsArray;
         next();
     } catch (error) {
         throw new APIError(500 , error , "Cannot get model data flow.")

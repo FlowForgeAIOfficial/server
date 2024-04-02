@@ -49,7 +49,7 @@ const gptGeneration  = async(input , modelDescription) =>{
 
 const generateModelUrl = asyncHandler(async(req, res  , next) =>{
     try {
-        const modelId = req.modelId;
+        const modelId = req.body.modelId;
         const modelArray = req.modelFlow;
         var str =""
         for(let i=0 ; i<modelArray.length ; i++){
@@ -60,7 +60,8 @@ const generateModelUrl = asyncHandler(async(req, res  , next) =>{
             modelId,
             {
                 $set :{
-                    modelUrl : url
+                    modelUrl : url,
+                    modelFlow : modelArray
                 }
             },
             {new : true}
@@ -109,10 +110,32 @@ const useModel = asyncHandler(async(req, res) =>{
 
 })
 
+const addModelDescription = asyncHandler(async(req , res) =>{
+    try {
+        const {modelDescription} = req.body;
+        if(!modelDescription){
+            throw new APIError(400 , "model description not defined.")
+        }
+        const userId = req.user._id;
+        const userAIModel = await UserAIModel.create({
+            userId,
+            modelDescription,
+            modelFlow :[]
+        })
+        return res
+        .status(200)
+        .json(new ApiResponse(200 , userAIModel , "added model description successfully."))
+    
+    } catch (error) {
+        throw new APIError(500 , "Failed to set modelDescription")
+    }
+    
+})
 
 export {
     textToSpeech,
     gptGeneration,
     generateModelUrl,
-    useModel
+    useModel,
+    addModelDescription
 }
