@@ -36,11 +36,10 @@ const registerUser = asyncHandler(async(req, res)=>{
     if(existedUser){
         throw new ApiError(409 , "user with email or username already exists")
     }
-    const passwordHash = await bcrypt.hash(password , 10)
     const user = await User.create({
         fullName, 
         email,
-        password: passwordHash
+        password
     })
 
     const createdUser = await User.findById(user._id).select(
@@ -64,15 +63,9 @@ const loginUser = asyncHandler(async(req , res)=>{
         throw new ApiError(400 , "email is required");
     }
 
-    const user = await User.findOne({email});
+    const user = await User.findOne({email, password});
     if(!user){
         throw new ApiError(404 , "user does not exist.")
-    }
-
-    const isPasswordValid = await  user.isPasswordCorrect(password)
-    console.log(isPasswordValid);
-    if(!isPasswordValid){
-        throw new ApiError(400 , "Please enter correct password.");
     }
 
     const accessToken = await generateAccessToken(user._id);

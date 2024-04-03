@@ -6,7 +6,6 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { UserAIModel } from "../models/userAIModel.model.js";
 
 const callFunction = async (modelFlow, input, i ,returnArray) => {
-    console.log(modelFlow[i]);
     if (modelFlow[i].functionCode === 'input') {
         returnArray.push({input})
         return input
@@ -116,12 +115,11 @@ const useModel = asyncHandler(async(req, res) =>{
 const getModels = asyncHandler(async(req, res) =>{
     try {
         const userId = req.user._id;
-
         if(!userId){
             throw new APIError(401 , "Unauthorized request.")
         }
-        const models = await UserAIModel.findById({userId});
-        console.log(models);
+        const models = await UserAIModel.find({userId});
+
         if(models.lenght === 0){
             return res.status(200).json(
                 new ApiResponse(200 ,{} , "Please deploy models to access them")
@@ -142,7 +140,6 @@ const getModel = asyncHandler(async(req, res) =>{
     try {
         const modelId = req.body.modelId;
         const model = await UserAIModel.findById({_id : modelId})
-        console.log(model);
         if(!model){
             throw new APIError(404 , "Model not found.")
         }

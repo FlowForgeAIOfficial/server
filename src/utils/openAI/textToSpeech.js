@@ -11,7 +11,6 @@ export const convertTextToSpeech = async(inputText ,voice ) =>{
         voice : voice,
         input : inputText
     })
-    console.log("File Path :" , speechile);
     const buffer = Buffer.from(await mp3.arrayBuffer())
     await fs.promises.writeFile(speechile , buffer)
     const cloudinaryResponse = await uplaodOnCloudinary(speechile);
