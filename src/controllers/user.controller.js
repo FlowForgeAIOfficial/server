@@ -60,21 +60,19 @@ const registerUser = asyncHandler(async(req, res)=>{
 const loginUser = asyncHandler(async(req , res)=>{
 
     const {email  ,password} = req.body;
-    console.log(email);
     if(!email){
-        throw new ApiError(400 , "username or email is required");
+        throw new ApiError(400 , "email is required");
     }
 
     const user = await User.findOne({email});
-
     if(!user){
         throw new ApiError(404 , "user does not exist.")
     }
 
-    const isPasswordValid = await user.isPasswordCorrect(password);
-
+    const isPasswordValid = await  user.isPasswordCorrect(password)
+    console.log(isPasswordValid);
     if(!isPasswordValid){
-        throw new ApiError(400 , "Invalid user credentials");
+        throw new ApiError(400 , "Please enter correct password.");
     }
 
     const accessToken = await generateAccessToken(user._id);

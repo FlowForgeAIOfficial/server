@@ -1,48 +1,21 @@
 import { APIError } from "openai";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { UserAIModel } from "../models/userAIModel.model.js";
-import functionAndCodes from "../utils/openAI/functionAndCodes.js";
-
-const getModelMap = (dropArray , mapArray)=>{
-    let values = new Array(dropArray.length);
-    for(let i=0 ; i<dropArray.length ; i++){
-        let index = parseInt(dropArray[i].key);
-        let value = dropArray[i].value;
-        values[index] = value;
-    }
-    let map =[]
-    for(let i=0 ; i<mapArray.length ; i++){
-        let key  = parseInt(mapArray[i].key);
-        let value = parseInt(mapArray[i].value);
-        map.push({
-            [values[key]] : values[value]
-        });
-    }
-    var finalMap = []
-    for(let i=0 ; i<map.length ; i++){
-        finalMap.push(Object.keys(map[i])[0]) 
-    }
-    console.log(finalMap)
-    finalMap.push('output')
-    
-    return finalMap;
-}
+import modelDescriptionArray from "../utils/openAI/getModelMap.js";
 
 export const generateModelDescriptionArray = asyncHandler(async(req, res , next) =>{
    
     try {
-        const {dropArray , mapArray , modelId} = req.body;
-        const modelArray = getModelMap(dropArray , mapArray);
-        req.modelFlow = modelArray;
-        var modelDetailsArray = []
-        for(let i=0 ; i<modelArray.length ; i++){
-            functionAndCodes(modelArray[i] ,req , modelDetailsArray) 
+        const {dropArray , mapArray } = req.body;
+        if(!dropArray || !mapArray){
+            throw new APIError(400 , "Please create a model to deploy.")
         }
-        req.modelFlow = modelDetailsArray;
+        const modelArray = modelDescriptionArray(dropArray , mapArray);
+        req.modelFlow = modelArray;
         next();
     } catch (error) {
         throw new APIError(500 , error , "Cannot get model data flow.")
     }
+
 });
 
 

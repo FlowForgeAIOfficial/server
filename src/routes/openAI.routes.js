@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
 import { generateModelDescriptionArray } from "../middlewares/openAI.middleware.js";
-import { generateModelUrl , useModel , addModelDescription} from "../controllers/openAI.controller.js";
+import { generateModelUrl , useModel , getModels, getModel} from "../controllers/openAI.controller.js";
 const router = Router()
 
 router.route("/deployModel").post( verifyJwt ,generateModelDescriptionArray ,   generateModelUrl  );
 router.route("/useModel").post(verifyJwt ,useModel);
-router.route("/addModelName").post(verifyJwt , addModelDescription)
+router.route("/getModels").get(verifyJwt , getModels);
+router.route("/getModel").get(verifyJwt , getModel)
 
 export default router
 
