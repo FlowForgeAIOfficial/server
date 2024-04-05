@@ -4,6 +4,7 @@ import { convertTextToSpeech } from "../utils/openAI/textToSpeech.js";
 import { chatWithAssistant } from "../utils/openAI/textGeneration.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { UserAIModel } from "../models/userAIModel.model.js";
+import { ModelCoordinate } from "../models/modelCoordinate.model.js";
 
 const callFunction = async (modelFlow, input, i ,returnArray) => {
     if (modelFlow[i].functionCode === 'input') {
@@ -45,37 +46,33 @@ const gptGeneration  = async(input , modelDescription) =>{
     return gptResponse;
 };
 
-
-const generateModelUrl = asyncHandler(async(req, res  , next) =>{
+const saveCoordinates = asyncHandler(async(req, res) =>{
     try {
-        const modelArray = req.modelFlow
-        
-        const deployedModel = await UserAIModel.create({
-            userId : req.user._id,
-            modelDescription : req.body.modelDescription,
-            modelFlow : req.modelFlow
-        })
-        var str =""
-        for(let i=0 ; i<modelArray.length ; i++){
-            str += `/${modelArray[i].functionCode}`
+        const modelId = req.deployedModel._id;
+        const modelCoordinates = req.body.coordinateObject;
+        if(!modelCoordinates){
+            throw new APIError(400 , "Model coordinates not found.")
         }
-        const url = `https://automai/${deployedModel._id}${str}`
-        const updateModel = await UserAIModel.findByIdAndUpdate(
-            deployedModel._id,
-            {
-                $set : {
-                    modelUrl : url
-                }
-            },
-            {new : true}
-        )
+        const coordinate = await ModelCoordinate.create({
+            modelId : modelId,
+            coordinateObject : modelCoordinates
+        })
         return res
         .status(200)
-        .json( new ApiResponse(200 , updateModel , "Model created successfully."))
-        
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    deployedModel : req.deployedModel,
+                    coordinate
+                },
+                "Model deployed successfully."
+            )
+        )
     } catch (error) {
-        throw new APIError(500 , error , "Unable to update model url .")
+        throw new APIError(500 , "Something went wrong while saving model coordinates.")
     }
+
 })
 
 
@@ -153,11 +150,12 @@ const getModel = asyncHandler(async(req, res) =>{
     }
 })
 
+
 export {
     textToSpeech,
     gptGeneration,
-    generateModelUrl,
     useModel,
     getModels,
-    getModel
+    getModel,
+    saveCoordinates
 }
