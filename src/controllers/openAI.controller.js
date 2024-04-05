@@ -5,6 +5,7 @@ import { chatWithAssistant } from "../utils/openAI/textGeneration.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { UserAIModel } from "../models/userAIModel.model.js";
 import { ModelCoordinate } from "../models/modelCoordinate.model.js";
+import textToImage from "../utils/openAI/textToImage.js";
 
 const callFunction = async (modelFlow, input, i ,returnArray) => {
     if (modelFlow[i].functionCode === 'input') {
@@ -26,6 +27,12 @@ const callFunction = async (modelFlow, input, i ,returnArray) => {
         returnArray.push({output : input})
         return input;
     }
+    else if(modelFlow[i].functionCode === 'TextToImage'){
+        const {revisedPrompt ,url} = await textToImage(input , modelFlow[i].data.n , modelFlow[i].data.size);
+        returnArray.push({revisedPrompt , imageUrl : url});
+        return dallEResponse;
+    }
+    
 }
 
 const textToSpeech =async (input , voice)=>{

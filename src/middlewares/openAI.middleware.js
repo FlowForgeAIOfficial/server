@@ -1,6 +1,7 @@
 import { APIError } from "openai";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import modelDescriptionArray from "../utils/openAI/getModelMap.js";
+import { UserAIModel } from "../models/userAIModel.model.js";
 
 const generateModelDescriptionArray = asyncHandler(async(req, res , next) =>{
    
