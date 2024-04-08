@@ -142,7 +142,7 @@ const getModels = asyncHandler(async(req, res) =>{
 
 const getModel = asyncHandler(async(req, res) =>{
     try {
-        const modelId = req.body.modelId;
+        const modelId = req.query.modelId;
         const model = await UserAIModel.findById({_id : modelId})
         if(!model){
             throw new APIError(404 , "Model not found.")
