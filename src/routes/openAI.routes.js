@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
 import { generateModelDescriptionArray , generateModelUrl } from "../middlewares/openAI.middleware.js";
-import { useModel , getModels, getModel , saveCoordinates} from "../controllers/openAI.controller.js";
+import { useModel , getModels, getModel , saveCoordinates,getModelAxes} from "../controllers/openAI.controller.js";
 const router = Router()
 
 router.route("/deployModel").post( verifyJwt ,generateModelDescriptionArray ,   generateModelUrl ,saveCoordinates );
 router.route("/useModel").post(verifyJwt ,useModel);
 router.route("/getModels").get(verifyJwt , getModels);
 router.route("/getModel").get(verifyJwt , getModel);
-
+router.route("/getModelAxes").get(verifyJwt , getModelAxes);
 export default router
 
 // click deploy -> create model flow array with input values

@@ -157,6 +157,24 @@ const getModel = asyncHandler(async(req, res) =>{
     }
 })
 
+const getModelAxes = asyncHandler(async(req, res) =>{
+    try {
+        const modelId = req.query.modelId;
+        console.log(modelId)
+        const modelAxes = await ModelCoordinate.find({modelId} )
+        if(!modelAxes){
+            throw new APIError(404 , "Model not found.")
+        }
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(200 , modelAxes , "Successfully fetched user model.")
+        )
+    } catch (error) {
+        throw new APIError(500 , error , "Something went wrong while fetching your model.")
+    }
+})
+
 
 export {
     textToSpeech,
@@ -164,5 +182,6 @@ export {
     useModel,
     getModels,
     getModel,
-    saveCoordinates
+    saveCoordinates,
+    getModelAxes
 }
