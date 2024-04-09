@@ -85,7 +85,8 @@ const saveCoordinates = asyncHandler(async(req, res) =>{
 
 const useModel = asyncHandler(async(req, res) =>{
     try {
-        const {modelId , inputText} = req.body;
+        const {inputText} = req.body;
+        const modelId = req.query.modelId
         if(!modelId){
             throw new APIError(404 , "input modelId not found")
         }

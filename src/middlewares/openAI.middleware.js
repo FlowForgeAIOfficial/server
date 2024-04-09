@@ -6,7 +6,11 @@ import { UserAIModel } from "../models/userAIModel.model.js";
 const generateModelDescriptionArray = asyncHandler(async(req, res , next) =>{
    
     try {
-        const {dropArray , mapArray } = req.body;
+        const {dropArray , mapArray , modelDescription } = req.body;
+        const modelFound = await UserAIModel.find({modelDescription})
+        if(modelFound){
+            throw new APIError(405 , "Model already deployed.")
+        }
         if(!dropArray || !mapArray){
             throw new APIError(400 , "Please create a model to deploy.")
         }
