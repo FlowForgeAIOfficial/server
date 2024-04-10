@@ -6,6 +6,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { UserAIModel } from "../models/userAIModel.model.js";
 import { ModelCoordinate } from "../models/modelCoordinate.model.js";
 import textToImage from "../utils/openAI/textToImage.js";
+import { User } from "../models/user.model.js";
 
 const callFunction = async (modelFlow, input, i ,returnArray) => {
     if (modelFlow[i].functionCode === 'input') {
@@ -82,19 +83,19 @@ const saveCoordinates = asyncHandler(async(req, res) =>{
 
 })
 
-
-const useModel = asyncHandler(async(req, res) =>{
+const useModel = asyncHandler(async(req, res) => {
     try {
+        const {modelId , userSecret} = req.query;
         const {inputText} = req.body;
-        const modelId = req.query.modelId
-        if(!modelId){
-            throw new APIError(404 , "input modelId not found")
+        const user = await User.findOne({userSecret})
+        if(!user){
+            throw new APIError(404 , "Invalid userSecret credential.")
         }
-        const aiModel = await UserAIModel.findById(modelId);
-        if(!aiModel){
-            throw new APIError(404 , "Model not found for the modelId")
+        const model = await UserAIModel.findById(modelId)
+        if(!model){
+            throw new APIError(404 , "Invalid modelId.")
         }
-        const modelFlow = aiModel.modelFlow;
+        const modelFlow = model.modelFlow;
         var returnArray = []
         var output = await callFunction(modelFlow ,inputText ,0 ,returnArray);
         for(let i=1 ; i<modelFlow.length ; i++){
@@ -109,12 +110,11 @@ const useModel = asyncHandler(async(req, res) =>{
                 returnArray,
                 "Model called successfully."
             )
-        )
+        )        
 
     } catch (error) {
-        throw new APIError(500 , error , "Something went wrong")
+        throw new APIError(500 , error , error.message)
     }
-
 })
 
 const getModels = asyncHandler(async(req, res) =>{

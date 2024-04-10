@@ -23,9 +23,9 @@ const generateAccessToken = async(userId) =>{
 
 const registerUser = asyncHandler(async(req, res)=>{
 
-    const {fullName , email  , password} = req.body;
+    const {fullName , email  , password , userSecret} = req.body;
     if(
-        [fullName , email  , password].some((field)=>{
+        [fullName , email  , password , userSecret].some((field)=>{
             field ?.trim() === ""
         })
     ){
@@ -39,11 +39,12 @@ const registerUser = asyncHandler(async(req, res)=>{
     const user = await User.create({
         fullName, 
         email,
-        password
+        password,
+        userSecret
     })
 
     const createdUser = await User.findById(user._id).select(
-        "-password"
+        "-password -userSecret"
     )
 
     if(!createdUser){

@@ -33,12 +33,7 @@ const userAIModelSchema = new Schema(
         },
         modelFlow :[
             mongoose.Schema.Types.Mixed
-        ],
-        modelUrl :{
-            type :String,
-            default : null
-        }
-
+        ]
     } , {timestamps :true})
 
 export const UserAIModel = mongoose.model("UserAIModel" , userAIModelSchema)

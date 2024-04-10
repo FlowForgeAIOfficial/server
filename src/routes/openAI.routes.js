@@ -5,7 +5,7 @@ import { useModel , getModels, getModel , saveCoordinates,getModelAxes} from "..
 const router = Router()
 
 router.route("/deployModel").post( verifyJwt ,generateModelDescriptionArray ,   generateModelUrl ,saveCoordinates );
-router.route("/useModel").post(verifyJwt ,useModel);
+router.route("/useModel").post(useModel);
 router.route("/getModels").get(verifyJwt , getModels);
 router.route("/getModel").get(verifyJwt , getModel);
 router.route("/getModelAxes").get(verifyJwt , getModelAxes);
