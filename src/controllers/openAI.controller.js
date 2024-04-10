@@ -162,7 +162,7 @@ const getModelAxes = asyncHandler(async(req, res) =>{
     try {
         const modelId = req.query.modelId;
         console.log(modelId)
-        const modelAxes = await ModelCoordinate.find({modelId} )
+        const modelAxes = await ModelCoordinate.findById(modelId)
         if(!modelAxes){
             throw new APIError(404 , "Model not found.")
         }

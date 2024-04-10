@@ -4,8 +4,7 @@ import { User } from "../models/user.model.js";
 import { uplaodOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { options } from "../utils/options.js";
-import bcrypt from "bcrypt"
-
+import generateRandomString from "../utils/randomStringGenerator.js";
 
 const generateAccessToken = async(userId) =>{
     try {
@@ -23,7 +22,8 @@ const generateAccessToken = async(userId) =>{
 
 const registerUser = asyncHandler(async(req, res)=>{
 
-    const {fullName , email  , password , userSecret} = req.body;
+    const {fullName , email  , password } = req.body;
+    const userSecret = generateRandomString(8);
     if(
         [fullName , email  , password , userSecret].some((field)=>{
             field ?.trim() === ""
