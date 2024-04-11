@@ -2,6 +2,7 @@ import { APIError } from "openai";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import modelDescriptionArray from "../utils/openAI/getModelMap.js";
 import { UserAIModel } from "../models/userAIModel.model.js";
+import { User } from "../models/user.model.js";
 
 const generateModelDescriptionArray = asyncHandler(async(req, res , next) =>{
    
@@ -26,14 +27,25 @@ const generateModelDescriptionArray = asyncHandler(async(req, res , next) =>{
 
 const generateModelUrl = asyncHandler(async(req, res , next) =>{
     try {
-        
+        const user = await User.findById(req.user._id);
+        const userSecret =  user.userSecret
         const deployedModel = await UserAIModel.create({
             userId : req.user._id,
             modelDescription : req.body.modelDescription,
             modelFlow : req.modelFlow
         })
-        
-        req.deployedModel = deployedModel;
+        const url = `https://bit-hackathon-1.onrender.com/api/v1/aiModel/useModel?modelId=${deployedModel._id}&userSecret=${userSecret}`
+
+        const updatedModel = await UserAIModel.findByIdAndUpdate(
+            deployedModel._id,
+            {
+                $set : {
+                    modelUrl : url
+                }
+            },
+            {new : true}
+        )
+        req.deployedModel = updatedModel;
         next()
         
     } catch (error) {
