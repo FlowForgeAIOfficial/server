@@ -176,6 +176,23 @@ const getModelAxes = asyncHandler(async(req, res) =>{
     }
 })
 
+const deleteModel = asyncHandler(async(req , res) =>{
+    try {
+        const modelId = req.query.modelId;
+        await UserAIModel.findByIdAndDelete(modelId);
+        await ModelCoordinate.deleteOne({modelId})
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200 , {} , `Successfully deleted model with modelID : ${modelId}`
+            )
+        )
+    } catch (error) {
+        throw new APIError(500 , "Failed to delete model.")
+    }
+})
+
 
 export {
     textToSpeech,
@@ -184,5 +201,6 @@ export {
     getModels,
     getModel,
     saveCoordinates,
-    getModelAxes
+    getModelAxes,
+    deleteModel
 }
