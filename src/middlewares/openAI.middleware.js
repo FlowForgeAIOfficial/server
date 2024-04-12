@@ -16,10 +16,11 @@ const generateModelDescriptionArray = asyncHandler(async(req, res , next) =>{
             throw new APIError(400 , "Please create a model to deploy.")
         }
         const modelArray = modelDescriptionArray(dropArray , mapArray);
+        console.log(modelArray);
         req.modelFlow = modelArray;
         next();
     } catch (error) {
-        throw new APIError(500 , error , "Cannot get model data flow.")
+        throw new APIError(500, "Cannot get model data flow.")
     }
 
 });
@@ -29,13 +30,14 @@ const generateModelUrl = asyncHandler(async(req, res , next) =>{
     try {
         const user = await User.findById(req.user._id);
         const userSecret =  user.userSecret
+        console.log(userSecret);
         const deployedModel = await UserAIModel.create({
             userId : req.user._id,
             modelDescription : req.body.modelDescription,
             modelFlow : req.modelFlow
         })
         const url = `https://bit-hackathon-1.onrender.com/api/v1/aiModel/useModel?modelId=${deployedModel._id}&userSecret=${userSecret}`
-
+        console.log(url);
         const updatedModel = await UserAIModel.findByIdAndUpdate(
             deployedModel._id,
             {
@@ -45,6 +47,7 @@ const generateModelUrl = asyncHandler(async(req, res , next) =>{
             },
             {new : true}
         )
+        console.log(updatedModel);
         req.deployedModel = updatedModel;
         next()
         

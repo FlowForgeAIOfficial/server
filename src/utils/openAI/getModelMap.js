@@ -9,7 +9,7 @@ const modelDescriptionArray = (dropArray  , mapArray) =>{
         var obj = dropArray.find(a => a.key == orderArray[i]);
         var functionCode = obj.value;
         if(functionCode === 'gptNode' || functionCode === 'TextToAudio' || functionCode === 'TextToImage'){
-            var data = obj.data;S
+            var data = obj.data;
             modelDetailsArray.push({
                 functionCode, data
             })
@@ -17,6 +17,7 @@ const modelDescriptionArray = (dropArray  , mapArray) =>{
             modelDetailsArray.push({functionCode : functionCode})
         }
     }
+    
     return modelDetailsArray;
 }
 export default modelDescriptionArray

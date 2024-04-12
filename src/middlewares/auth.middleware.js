@@ -12,13 +12,14 @@ export const verifyJwt = asyncHandler(async(req , res , next) =>{
     
         const decodedToken =  jwt.verify(token ,"lanthai");
         
-        const user = await User.findById(decodedToken?._id).select("-password ");
+        const user = await User.findById(decodedToken?._id).select("-password -userSecret");
     
         if(!user){
             throw new ApiError(401 , "Invalid access token.")
         }
     
         req.user = user;
+        
         next();
     } catch (error) {
         throw new ApiError(401 , error?.message || "inlvaid access token")
