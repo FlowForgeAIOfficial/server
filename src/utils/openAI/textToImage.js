@@ -1,18 +1,16 @@
-import { APIError } from "openai";
-import { ApiResponse } from "../ApiResponse.js";
 import { uplaodOnCloudinary } from "../cloudinary.js";
 import fs from "fs";
 import path from "path";
 
 
-const textToImage = async(req , res) =>{
+const textToImage = async(prompt) =>{
     try {
         const response = await fetch(
             "https://api-inference.huggingface.co/models/Artples/LAI-ImageGeneration-vSDXL-2",
             {
                 headers  :{ Authorization : `Bearer ${process.env.HUGGING_FACE_APIKEY}` },
                 method : "POST",
-                body : JSON.stringify(`${req.body.prompt}.Do not generate explicit, pornographic, offensive, or graphic images. Adhere to ethical standards and show respect for all individuals and communities.`)
+                body : JSON.stringify(`${prompt}.Do not generate explicit, pornographic, offensive, or graphic images. Adhere to ethical standards and show respect for all individuals and communities.`)
             }
         );
 
@@ -22,11 +20,9 @@ const textToImage = async(req , res) =>{
         await fs.promises.writeFile(imageFile , buffer);
         
         const cloudinaryResponse = await uplaodOnCloudinary(imageFile).url;
-        return res.json(
-            new ApiResponse(200 , cloudinaryResponse , "Success")
-        )
+        return cloudinaryResponse
     } catch (error) {
-        throw new APIError(500 , error)
+        return error
     }
 }
 
