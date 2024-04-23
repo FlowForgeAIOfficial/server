@@ -12,7 +12,7 @@ const textToImage = async(req , res) =>{
             {
                 headers  :{ Authorization : `Bearer ${process.env.HUGGING_FACE_APIKEY}` },
                 method : "POST",
-                body : JSON.stringify(req.body.prompt)
+                body : JSON.stringify(`${req.body.prompt}.Do not generate explicit, pornographic, offensive, or graphic images. Adhere to ethical standards and show respect for all individuals and communities.`)
             }
         );
 
