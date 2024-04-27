@@ -33,6 +33,6 @@ app.use("/api/v1/aiModel",openAiRouter)
 app.use("/api/v1/user" , userRouter)
 
 //oauth
-app.use('/api/v1',googleOAuthRouter)
-app.use('/api/v1',githubOAuthRouter)
+app.use('/',googleOAuthRouter)
+app.use('/',githubOAuthRouter)
 export { app }

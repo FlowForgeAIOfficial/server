@@ -11,17 +11,24 @@ passport.use(new GitHubStrategy({
     callbackURL: `http://localhost:${process.env.PORT}/github/callback`,
     scope: ['user:email']
 }, async (accessToken, refreshToken, profile, done) => {
+      
+        console.log({
+            "accesstoken":accessToken,
+            "refreshtoken":refreshToken,
+            "profile":profile.emails,
+
+        });
     try {
+
         const user = new User({
-            email : profile.email,
+            email : profile.emails[0].value,
             displayName : profile.displayName,
             userSecret : generateRandomString(8),
-            imageUrl : profile.photos[0].value,
-            refreshToken,
+            imageUrl : profile._json.avatar_url,
             oauthId : profile.id
         })
 
-        await User.save()
+        await user.save()
         return done(null , profile)
     } catch (error) {
         done(error, false);
@@ -33,9 +40,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => {
-        done(err, user);
-    });
+    done(null, id);
 });
 
 export { passport };

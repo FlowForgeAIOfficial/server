@@ -24,10 +24,6 @@ const userSchema = new Schema(
         imageUrl : {
             type : String,
         },
-        refreshToken : {
-            type : String,
-            required : true
-        },
         oauthId : {
             type : String,
             required : true

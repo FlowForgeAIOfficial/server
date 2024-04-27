@@ -15,11 +15,10 @@ passport.use(new GoogleStrategy({
         const user = await User.findOne({oauthId : profile.id})
         if(!user){
             const newUser = new User({
-                email : profile.email,
+                email : profile.emails[0].value,
                 displayName : profile.displayName,
                 userSecret : generateRandomString(8),
                 imageUrl : profile.photos[0].value,
-                refreshToken,
                 oauthId : profile.id
             })
 
