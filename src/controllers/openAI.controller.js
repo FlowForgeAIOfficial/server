@@ -119,23 +119,18 @@ const useModel = asyncHandler(async(req, res) => {
 
 const getModels = asyncHandler(async(req, res) =>{
     try {
-        const userId = req.user._id;
-        if(!userId){
-            throw new APIError(401 , "Unauthorized request.")
+        if (!req.isAuthenticated()) {
+            throw new APIError(401, "Unauthorized request.");
         }
-        const models = await UserAIModel.find({userId});
 
-        if(models.lenght === 0){
-            return res.status(200).json(
-                new ApiResponse(200 ,{} , "Please deploy models to access them")
-            )
+        const models=await UserAIModel.find({userId:req.loggedinUser._id})
+
+        if(models.length === 0){
+            return res.status(200).json(new ApiResponse(200 ,{} , "Nothing to show"))
         }
-        return res
-        .status(200)
-        .json(
-            new ApiResponse(200 , models , "User's ai models fetched successfully.")
-        )
 
+        return res.status(200).json(new ApiResponse(200 , models , "User's ai models fetched successfully."))
+      
     } catch (error) {
         throw new APIError(500 , "Something went wrong while fetchin your ai models.")
     }

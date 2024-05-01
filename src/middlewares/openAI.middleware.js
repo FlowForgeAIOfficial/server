@@ -8,6 +8,9 @@ const generateModelDescriptionArray = asyncHandler(async(req, res , next) =>{
    
     try {
         const {dropArray , mapArray , modelDescription } = req.body;
+        console.log({
+            dropArray , mapArray , modelDescription 
+        })
         const modelFound = await UserAIModel.findOne({modelDescription})
         if(modelFound){
             throw new APIError(405 , "Model already deployed.")
