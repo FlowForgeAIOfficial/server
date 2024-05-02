@@ -1,48 +1,45 @@
 import passport from 'passport';
-import { Strategy as GitHubStrategy } from 'passport-github2';
-import { User } from '../models/user.model.js';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import dotenv from 'dotenv';
-import generateRandomString from '../utils/randomStringGenerator.js';
+import { User } from '../models/user.model.js';
+import generateRandomString from '../utils/randomStringGenerator.js'
 dotenv.config();
 
-passport.use(new GitHubStrategy({
+passport.serializeUser((user , done) => { 
+    done(null , user); 
+}) 
+passport.deserializeUser(function(user, done) { 
+    done(null, user); 
+}); 
+  
+passport.use(new GoogleStrategy({ 
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: `http://localhost:${process.env.PORT}/github/callback`,
-    scope: ['user:email']
-}, async (accessToken, refreshToken, profile, done) => {
-      
-        console.log({
-            "accesstoken":accessToken,
-            "refreshtoken":refreshToken,
-            "profile":profile.emails,
-
-        });
+    callbackURL: `http://localhost:${process.env.PORT}/google/callback`,
+    scope: ['profile', 'email'], 
+    passReqToCallback:true
+  }, 
+  async(request, accessToken, refreshToken, profile, done)=> { 
     try {
 
-        const user = new User({
-            email : profile.emails[0].value,
-            displayName : profile.displayName,
-            userSecret : generateRandomString(8),
-            imageUrl : profile._json.avatar_url,
-            oauthId : profile.id
-        })
+      const user = await User.findOne({oauthId : profile.id})
+      if(!user){
+          const newUser = new User({
+              email : profile.emails[0].value,
+              displayName : profile.displayName,
+              userSecret : generateRandomString(8),
+              imageUrl : profile.photos[0].value,
+              oauthId : profile.id
+          })
 
-        await user.save()
-        return done(null , profile)
+          await newUser.save()
+      }
+      return done(null, profile);
+      
     } catch (error) {
-        done(error, false);
+       return done(error, false);
     }
-}));
+  } 
+));
 
-passport.serializeUser((user, done) => {
-    done(null, user.id);
-});
-
-passport.deserializeUser((id, done) => {
-    done(null, id);
-});
-
-export { passport };
-
-
+export { passport}
