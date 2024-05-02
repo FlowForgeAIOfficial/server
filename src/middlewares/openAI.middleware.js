@@ -11,15 +11,19 @@ const generateModelDescriptionArray = asyncHandler(async(req, res , next) =>{
         console.log({
             dropArray , mapArray , modelDescription 
         })
+        console.log(1);
         const modelFound = await UserAIModel.findOne({modelDescription})
         if(modelFound){
             throw new APIError(405 , "Model already deployed.")
         }
+        console.log(2);
         if(!dropArray || !mapArray){
             throw new APIError(400 , "Please create a model to deploy.")
         }
+        console.log(3);
         const modelArray = modelDescriptionArray(dropArray , mapArray);
         console.log(modelArray);
+        console.log(4);
         req.modelFlow = modelArray;
         next();
     } catch (error) {
