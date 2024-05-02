@@ -1,5 +1,5 @@
 import passport from 'passport';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Strategy as GitHubStrategy } from 'passport-github2';
 import dotenv from 'dotenv';
 import { User } from '../models/user.model.js';
 import generateRandomString from '../utils/randomStringGenerator.js'
@@ -12,23 +12,23 @@ passport.deserializeUser(function(user, done) {
     done(null, user); 
 }); 
   
-passport.use(new GoogleStrategy({ 
+passport.use(new GitHubStrategy({ 
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: `http://localhost:${process.env.PORT}/google/callback`,
-    scope: ['profile', 'email'], 
+    callbackURL: `http://localhost:${process.env.PORT}/github/callback`,
+    scope: ['user:email'], 
     passReqToCallback:true
   }, 
   async(request, accessToken, refreshToken, profile, done)=> { 
     try {
-
+      console.log(profile)
       const user = await User.findOne({oauthId : profile.id})
       if(!user){
           const newUser = new User({
               email : profile.emails[0].value,
               displayName : profile.displayName,
               userSecret : generateRandomString(8),
-              imageUrl : profile.photos[0].value,
+              imageUrl : profile._json.avatar_url,
               oauthId : profile.id
           })
 

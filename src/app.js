@@ -7,6 +7,7 @@ import cookieSession from "cookie-session"
 import googleOAuthRouter from "./routes/google.routes.js"
 import githubOAuthRouter from "./routes/github.routes.js"
 import passport from "passport"
+import { verifyUser } from "./middlewares/auth.middleware.js"
 
 const app = express()
 
@@ -37,11 +38,12 @@ app.use("/api/v1/user" , userRouter)
 app.use('/',googleOAuthRouter)
 app.use('/',githubOAuthRouter)
 
-app.post('/logout', function(req, res) {
+app.post('/logout', verifyUser, function(req, res) {
 
         req.session = null;
         res.clearCookie('session'); // Clear session cookie
-        res.status(200).send('Logged out');
+       
+        res.status(200).json({message:'Logged out'});
       
     
   });

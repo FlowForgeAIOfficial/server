@@ -6,8 +6,10 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 export const verifyUser = asyncHandler(async(req , res , next) =>{
     try {
         if (req.isAuthenticated()) {
-            const googleID=req.user.id
-            const loggedinUser=User.findOne({oauthId:googleID})
+        
+            const userId=req.user.id
+            const loggedinUser=User.findOne({oauthId:userId})
+          
 
             req.loggedinUser=loggedinUser
             
