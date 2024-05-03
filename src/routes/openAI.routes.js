@@ -3,10 +3,10 @@ import { verifyUser } from "../middlewares/auth.middleware.js";
 import {  generateModelUrl } from "../middlewares/openAI.middleware.js";
 import { useModel , getModels, getModel , saveCoordinates,getModelAxes , deleteModel} from "../controllers/openAI.controller.js";
 import textToImage from "../utils/openAI/textToImage.js";
-import {createPaths } from "../utils/openAI/getModelMap.js";
+import { createPaths } from "../middlewares/openAI.middleware.js";
 const router = Router()
 
-router.route("/deployModel").post( verifyUser ,createPaths ,   generateModelUrl ,saveCoordinates );
+router.route("/deployModel").post( verifyUser ,createPaths ,   generateModelUrl ,saveCoordinates );  //dropArray , mapArray , startNode ,endNode , coordinateObject
 router.route("/useModel").post(useModel);
 router.route("/getModels").get(verifyUser,getModels );
 router.route("/getModel").get(verifyUser , getModel);

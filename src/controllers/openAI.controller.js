@@ -7,34 +7,9 @@ import { UserAIModel } from "../models/userAIModel.model.js";
 import { ModelCoordinate } from "../models/modelCoordinate.model.js";
 import textToImage from "../utils/openAI/textToImage.js";
 import { User } from "../models/user.model.js";
+import usingModels from "../utils/openAI/useModels.js";
 
-const callFunction = async (modelFlow, input, i ,returnArray) => {
-    if (modelFlow[i].functionCode === 'input') {
-        returnArray.push({input})
-        return input
-    }
-    else if (modelFlow[i].functionCode === 'gptNode') {
-        const gptResponse = await gptGeneration(input , modelFlow[i].data);
-        returnArray.push({gptResponse})
-        return gptResponse;
-    }
 
-    else if (modelFlow[i].functionCode === 'TextToAudio') {
-        const speechFile = await textToSpeech(input , modelFlow[i].data);
-        returnArray.push({speechFile})
-        return speechFile;
-    }
-    else if (modelFlow[i].functionCode === 'output') {
-        returnArray.push({output : input})
-        return input;
-    }
-    else if(modelFlow[i].functionCode === 'TextToImage'){
-        const {revisedPrompt ,url} = await textToImage(input , modelFlow[i].data.n , modelFlow[i].data.size);
-        returnArray.push({revisedPrompt , imageUrl : url});
-        return dallEResponse;
-    }
-    
-}
 
 const textToSpeech =async (input , voice)=>{
     if(!input){
@@ -83,6 +58,8 @@ const saveCoordinates = asyncHandler(async(req, res) =>{
 
 })
 
+
+
 const useModel = asyncHandler(async(req, res) => {
     try {
         const {modelId , userSecret} = req.query;
@@ -95,19 +72,21 @@ const useModel = asyncHandler(async(req, res) => {
         if(!model){
             throw new APIError(404 , "Invalid modelId.")
         }
-        const modelFlow = model.modelFlow;
-        var returnArray = []
-        var output = await callFunction(modelFlow ,inputText ,0 ,returnArray);
-        for(let i=1 ; i<modelFlow.length ; i++){
-            const currentCall = await callFunction(modelFlow , output ,i,returnArray)
-            output = currentCall
-        }
+        const {modelFlow , nodeInfo} = model;
+        console.log({modelFlow , nodeInfo});
+        // var returnArray = []
+        // var output = await callFunction(modelFlow ,inputText ,0 ,returnArray);
+        // for(let i=1 ; i<modelFlow.length ; i++){
+        //     const currentCall = await callFunction(modelFlow , output ,i,returnArray)
+        //     output = currentCall
+        // }
+        const outputs = await usingModels(modelFlow ,nodeInfo , inputText)
         return res
         .status(200)
         .json(
             new ApiResponse(
                 200,
-                returnArray,
+                outputs,
                 "Model called successfully."
             )
         )        

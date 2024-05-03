@@ -16,7 +16,7 @@
 //     }
 // ]
 
-import mongoose , {Schema, model} from "mongoose";
+import mongoose , {Schema, model, mongo} from "mongoose";
 
 
 const userAIModelSchema = new Schema(
@@ -36,6 +36,9 @@ const userAIModelSchema = new Schema(
         ],
         modelUrl : {
             type : String
+        },
+        nodeInfo : {
+            type : mongoose.Schema.Types.Mixed
         }
     } , {timestamps :true})
 
