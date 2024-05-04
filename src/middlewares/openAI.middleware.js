@@ -41,7 +41,7 @@ const generateModelUrl = asyncHandler(async(req, res , next) =>{
         const userSecret =  user.userSecret
         console.log(userSecret);
         const deployedModel = await UserAIModel.create({
-            userId : req.user._id,
+            userId : req.loggedinUser._id,
             modelDescription : req.body.modelDescription,
             modelFlow : req.paths ,
             nodeInfo : req.nodeInfo

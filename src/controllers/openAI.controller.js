@@ -103,7 +103,7 @@ const getModels = asyncHandler(async(req, res) =>{
         }
 
         const models=await UserAIModel.find({userId:req.loggedinUser._id})
-
+       // console.log(models)
         if(models.length === 0){
             return res.status(200).json(new ApiResponse(200 ,{} , "Nothing to show"))
         }
