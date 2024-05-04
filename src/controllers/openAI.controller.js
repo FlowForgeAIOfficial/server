@@ -8,7 +8,9 @@ import { ModelCoordinate } from "../models/modelCoordinate.model.js";
 import textToImage from "../utils/openAI/textToImage.js";
 import { User } from "../models/user.model.js";
 import usingModels from "../utils/openAI/useModels.js";
-
+import dotenv from 'dotenv'
+import { model } from "mongoose";
+dotenv.config()
 
 
 const textToSpeech =async (input , voice)=>{
@@ -119,6 +121,7 @@ const getModel = asyncHandler(async(req, res) =>{
     try {
         const modelId = req.query.modelId;
         const model = await UserAIModel.findById({_id : modelId})
+        //console.log(model)
         if(!model){
             throw new APIError(404 , "Model not found.")
         }
@@ -135,8 +138,9 @@ const getModel = asyncHandler(async(req, res) =>{
 const getModelAxes = asyncHandler(async(req, res) =>{
     try {
         const modelId = req.query.modelId;
-        console.log(modelId)
+       // console.log(modelId)
         const modelAxes = await ModelCoordinate.findOne({modelId})
+        //console.log(modelAxes)
         if(!modelAxes){
             throw new APIError(404 , "Model not found.")
         }

@@ -35,8 +35,8 @@ const callFunction = async(path , nodeInfo , inputText)=>{
     const output = [];
     var cur = callFunction1(path , nodeInfo , inputText , 0 , output)
     const slicedPath = path.slice(0);
-    path.forEach(element => {
-        const currentCall = callFunction1(path , nodeInfo , cur, element, output ) 
+    slicedPath.forEach(element => {
+        const currentCall = callFunction1(slicedPath , nodeInfo , cur, element, output ) 
         console.log({currentCall});
         return currentCall
     });

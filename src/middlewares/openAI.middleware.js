@@ -87,7 +87,7 @@ const createPaths = asyncHandler(async(req , res , next) =>{
 
         const paths = findPath(adjacencyList , startNode , endNode);
         req.paths = paths;
-        req.nodeIndo = nodeData;
+        req.nodeInfo = nodeData;
         console.log({nodeData});
         next();
         
