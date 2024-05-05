@@ -4,14 +4,23 @@ import {  generateModelUrl } from "../middlewares/openAI.middleware.js";
 import { useModel , getModels, getModel , saveCoordinates,getModelAxes , deleteModel} from "../controllers/openAI.controller.js";
 import textToImage from "../utils/openAI/textToImage.js";
 import { createPaths } from "../middlewares/openAI.middleware.js";
+import { chatWithAssistant } from "../utils/openAI/textGeneration.js";
 const router = Router()
 
 router.route("/deployModel").post( verifyUser ,createPaths ,   generateModelUrl ,saveCoordinates );  //dropArray , mapArray , startNode ,endNode , coordinateObject
-router.route("/useModel").post(useModel);
+router.route("/useModel").post(useModel); //inputText
 router.route("/getModels").get(verifyUser,getModels );
 router.route("/getModel").get(verifyUser , getModel);
 router.route("/getModelAxes").get(verifyUser , getModelAxes);
-router.route('/deleteModel').delete(verifyUser , deleteModel)
+router.route('/deleteModel').delete(verifyUser , deleteModel);
+
+router.route('/chat').post(async(req,res) => {
+    const {input , modelDescription} = req.body;
+    const gptRes = await chatWithAssistant(input , modelDescription);
+    return res.json({
+        gptRes
+    })
+})
 
 
 router.route("/textToImage").post(textToImage);

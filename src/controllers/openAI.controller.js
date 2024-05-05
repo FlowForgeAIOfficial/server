@@ -5,11 +5,9 @@ import { chatWithAssistant } from "../utils/openAI/textGeneration.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { UserAIModel } from "../models/userAIModel.model.js";
 import { ModelCoordinate } from "../models/modelCoordinate.model.js";
-import textToImage from "../utils/openAI/textToImage.js";
 import { User } from "../models/user.model.js";
-import usingModels from "../utils/openAI/useModels.js";
+import  usingModels  from "../utils/openAI/useModels.js";
 import dotenv from 'dotenv'
-import { model } from "mongoose";
 dotenv.config()
 
 
@@ -76,12 +74,7 @@ const useModel = asyncHandler(async(req, res) => {
         }
         const {modelFlow , nodeInfo} = model;
         console.log({modelFlow , nodeInfo});
-        // var returnArray = []
-        // var output = await callFunction(modelFlow ,inputText ,0 ,returnArray);
-        // for(let i=1 ; i<modelFlow.length ; i++){
-        //     const currentCall = await callFunction(modelFlow , output ,i,returnArray)
-        //     output = currentCall
-        // }
+        
         const outputs = await usingModels(modelFlow ,nodeInfo , inputText)
         return res
         .status(200)
