@@ -76,6 +76,7 @@ const useModel = asyncHandler(async(req, res) => {
         console.log({modelFlow , nodeInfo});
         
         const outputs = await usingModels(modelFlow ,nodeInfo , inputText)
+        
         return res
         .status(200)
         .json(
