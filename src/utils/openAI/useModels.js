@@ -28,7 +28,7 @@ const callFunction1 = async (path,nodeInfo , input, i ,output) => {
     }
     else if(nodeInfo[path[i]].functionCode === 'TextToImage'){
         const fileUrl = await textToImage(input , nodeInfo[path[i]].data)
-        output.push({imageUrl : fileUrl})
+        output.push({type : 'imageUrl' , value : fileUrl})
         return fileUrl;
     }
     
@@ -38,12 +38,11 @@ const callFunction1 = async (path,nodeInfo , input, i ,output) => {
 const callFunction = async(path , nodeInfo , inputText , res)=>{
     const output = [];
     
-    var cur = await callFunction1(path , nodeInfo , inputText , 0 , output)
+    var cur =await  callFunction1(path , nodeInfo , inputText , 0 , output)
     for(let i=1 ; i<path.length ; i++){
-        const currentCall =await callFunction1(path , nodeInfo , cur, i, output ) 
+        const currentCall = await  callFunction1(path , nodeInfo , cur, i, output ) 
         cur=currentCall
-        // console.log({output})
-        // console.log({currentCall});
+        // console.log({i , output});
     }
     console.log({output})
     res.push(output)
@@ -55,14 +54,14 @@ const usingModels = async(modelFlow ,nodeInfo, inputText) => {
         const functionArray = [];
         const res = [];
         for(let i=0 ; i<modelFlow.length ; i++){
-            functionArray.push(callFunction(modelFlow[i] , nodeInfo , inputText , res))
+            functionArray.push( callFunction(modelFlow[i] , nodeInfo , inputText , res))
         }
-        // console.log(functionArray)
-        async.parallel(functionArray , function(err , res){
-            console.log(res);
-        })
-
-        return res;
+        console.log({functionArray})
+        const calls = await async.parallel(functionArray);
+        
+        console.log({calls});
+        return calls
+        
     } catch (error) {
         return error
     }

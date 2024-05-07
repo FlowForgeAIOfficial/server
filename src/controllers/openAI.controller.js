@@ -73,7 +73,6 @@ const useModel = asyncHandler(async(req, res) => {
             throw new APIError(404 , "Invalid modelId.")
         }
         const {modelFlow , nodeInfo} = model;
-        console.log({modelFlow , nodeInfo});
         
         const outputs = await usingModels(modelFlow ,nodeInfo , inputText)
         

@@ -20,7 +20,7 @@ const textToImage = async(prompt , data) =>{
         await fs.promises.writeFile(imageFile , buffer);
         
         const cloudinaryResponse = await uplaodOnCloudinary(imageFile).url;
-        console.log("Text to image : " , {prompt , data});
+        // console.log("Text to image : " , {prompt , data});
         return cloudinaryResponse
         // const res = "this is text to image response"
         // return res
