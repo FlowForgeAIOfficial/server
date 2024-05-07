@@ -36,7 +36,7 @@ const generateModelUrl = asyncHandler(async(req, res , next) =>{
             modelDescription : req.body.modelDescription,
             modelFlow : req.modelFlow
         })
-        const url = `https://bit-hackathon-1.onrender.com/api/v1/aiModel/useModel?modelId=${deployedModel._id}&userSecret=${userSecret}`
+        const url = `https://server-wrof.onrender.com/api/v1/aiModel/useModel?modelId=${deployedModel._id}&userSecret=${userSecret}`
         console.log(url);
         const updatedModel = await UserAIModel.findByIdAndUpdate(
             deployedModel._id,
