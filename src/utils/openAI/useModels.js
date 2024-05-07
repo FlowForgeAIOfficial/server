@@ -1,16 +1,17 @@
-import { gptGeneration, textToSpeech } from "../../controllers/openAI.controller.js";
 import textToImage from "./textToImage.js";
+import { chatWithAssistant } from "./textGeneration.js";
+import { convertTextToSpeech } from "./textToSpeech.js";
 
 const callFunction1 = async (path, nodeInfo, input, i, output) => {
     if (nodeInfo[path[i]].functionCode === 'input') {
         output.push({ type: 'input', value: input });
         return input;
     } else if (nodeInfo[path[i]].functionCode === 'gptNode') {
-        const gptResponse = await gptGeneration(input, nodeInfo[path[i]].data);
+        const gptResponse = await chatWithAssistant(input, nodeInfo[path[i]].data);
         output.push({ type: 'gptResponse', value: gptResponse });
         return gptResponse;
     } else if (nodeInfo[path[i]].functionCode === 'TextToAudio') {
-        const speechFile = await textToSpeech(input, nodeInfo[path[i]].data);
+        const speechFile = await convertTextToSpeech(input, nodeInfo[path[i]].data);
         output.push({ type: 'speechFile', value: speechFile });
         return speechFile;
     } else if (nodeInfo[path[i]].functionCode === 'output') {
