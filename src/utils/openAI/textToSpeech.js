@@ -16,7 +16,7 @@ export const convertTextToSpeech = async(inputText ,voice ) =>{
         await fs.promises.writeFile(speechile , buffer)
         const cloudinaryResponse = await uplaodOnCloudinary(speechile);
         console.log("Text to voice : ", {inputText , voice});
-        return cloudinaryResponse.url;
+        return cloudinaryResponse;
         // const res = `this is voice response ${inputText} ${voice}`
         // return res
     } catch (error) {

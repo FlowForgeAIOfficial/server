@@ -94,9 +94,7 @@ const useModel = asyncHandler(async(req, res) => {
 
 const getModels = asyncHandler(async(req, res) =>{
     try {
-        if (!req.isAuthenticated()) {
-            throw new APIError(401, "Unauthorized request.");
-        }
+        
 
         const models=await UserAIModel.find({userId:req.loggedinUser._id})
        // console.log(models)
