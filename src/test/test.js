@@ -1,8 +1,10 @@
-import { uplaodOnCloudinary } from "../cloudinary.js";
 import fs from "fs";
-import path from "path";
+import path, { resolve } from "path";
 import dotenv from 'dotenv'
+import { uplaodOnCloudinary } from "../utils/cloudinary.js";
 dotenv.config()
+
+
 
 const textToImage = async(prompt , data) =>{
     try {
@@ -28,4 +30,5 @@ const textToImage = async(prompt , data) =>{
     }
 }
 
-export default textToImage
+const res = await textToImage("Astronaut riding horse")
+console.log(res);

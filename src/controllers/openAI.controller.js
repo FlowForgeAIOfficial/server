@@ -62,7 +62,8 @@ const saveCoordinates = asyncHandler(async(req, res) =>{
 
 const useModel = asyncHandler(async(req, res) => {
     try {
-        const {modelId , userSecret} = req.query;
+        const {modelId , userSecret } = req.query;
+       
         const {inputText} = req.body;
         const user = await User.findOne({userSecret})
         if(!user){

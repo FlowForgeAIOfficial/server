@@ -4,6 +4,8 @@ import { UserAIModel } from "../models/userAIModel.model.js";
 import { User } from "../models/user.model.js";
 import { findPath,  nodeInfo } from "../utils/openAI/getModelMap.js";
 import getStartEndNode from "../utils/openAI/getStartEndNode.js";
+import dotenv from 'dotenv'
+dotenv.config()
 
 // const generateModelDescriptionArray = asyncHandler(async(req, res , next) =>{
    
