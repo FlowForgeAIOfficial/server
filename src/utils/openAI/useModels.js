@@ -38,27 +38,16 @@ const callFunction = async (path, nodeInfo, inputText) => {
 const usingModels = async (modelFlow, nodeInfo, inputText) => {
     try {
         const functionArray = [];
-        console.log({modelFlow, nodeInfo});
         for (let i = 0; i < modelFlow.length; i++) {
             // Push actual async function calls into the array
             functionArray.push(callFunction(modelFlow[i], nodeInfo, inputText));
         }
         
         const calls = await Promise.all(functionArray);
-        console.log({ calls });
         return calls;
 
-        // const result = []
-
-        // console.log({modelFlow , nodeInfo});
-        // for(let i=0 ; i<modelFlow.length ; i++){
-        //     const res = await callFunction(modelFlow[i] , nodeInfo , inputText);
-        //     result.push(res);
-        // }
-        // return result
         
     } catch (error) {
-        console.error('Error in usingModels:', error);
         throw error;
     }
 };

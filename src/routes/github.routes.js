@@ -1,6 +1,9 @@
 
 import { Router } from "express";
 import {passport} from '../controllers/githubouth.controller.js'
+import dotenv from 'dotenv'
+dotenv.config()
+
 
 const router = Router();
 
@@ -20,7 +23,7 @@ router.get('/githubAuth/callback/success' , (req , res) => {
     if(!req.user) 
         res.redirect('/githubAuth/callback/failure');
     //res.json(req.user)
-    res.redirect("http://localhost:5173/home") 
+    res.redirect(process.env.AUTH_SUCCESS_URL) 
 
 }); 
 

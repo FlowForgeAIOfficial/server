@@ -14,7 +14,6 @@ const textToImage = async(prompt , data) =>{
                 body : JSON.stringify(`${data}.${prompt}.`)
             }
         );
-        console.log(response);
         const imageFile = path.resolve(`./public/temp/${Date()}.jpg`);
 
         const buffer = Buffer.from(await response.arrayBuffer());

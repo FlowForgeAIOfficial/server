@@ -14,8 +14,7 @@ export const chatWithAssistant = async(userInput , modelDescription)=>{
     } catch (error) {
         return error
     }
-    // const chatGpt = "this is gpt response"
-    // return chatGpt
+   
 }
 
 
