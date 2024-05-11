@@ -1,15 +1,16 @@
 import { Router } from "express";
-import { verifyJwt } from "../middlewares/auth.middleware.js";
-import { generateModelDescriptionArray , generateModelUrl } from "../middlewares/openAI.middleware.js";
+import { verifyUser } from "../middlewares/auth.middleware.js";
+import {  generateModelUrl } from "../middlewares/openAI.middleware.js";
 import { useModel , getModels, getModel , saveCoordinates,getModelAxes , deleteModel} from "../controllers/openAI.controller.js";
+import { createPaths } from "../middlewares/openAI.middleware.js";
 const router = Router()
 
-router.route("/deployModel").post( verifyJwt ,generateModelDescriptionArray ,   generateModelUrl ,saveCoordinates );
-router.route("/useModel").post(useModel);
-router.route("/getModels").get(verifyJwt , getModels);
-router.route("/getModel").get(verifyJwt , getModel);
-router.route("/getModelAxes").get(verifyJwt , getModelAxes);
-router.route('/deleteModel').delete(verifyJwt , deleteModel)
+router.route("/deployModel").post( verifyUser ,createPaths ,   generateModelUrl ,saveCoordinates );  //dropArray , mapArray , startNode ,endNode , coordinateObject
+router.route("/useModel").post(useModel); //inputText
+router.route("/getModels").get(verifyUser,getModels );
+router.route("/getModel").get(verifyUser , getModel);
+router.route("/getModelAxes").get(verifyUser , getModelAxes);
+router.route('/deleteModel').delete(verifyUser , deleteModel);
 
 export default router
 

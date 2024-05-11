@@ -5,36 +5,11 @@ import { chatWithAssistant } from "../utils/openAI/textGeneration.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { UserAIModel } from "../models/userAIModel.model.js";
 import { ModelCoordinate } from "../models/modelCoordinate.model.js";
-import textToImage from "../utils/openAI/textToImage.js";
 import { User } from "../models/user.model.js";
+import  usingModels  from "../utils/openAI/useModels.js";
+import dotenv from 'dotenv'
+dotenv.config()
 
-const callFunction = async (modelFlow, input, i ,returnArray) => {
-    if (modelFlow[i].functionCode === 'input') {
-        returnArray.push({input})
-        return input
-    }
-    else if (modelFlow[i].functionCode === 'gptNode') {
-        const gptResponse = await gptGeneration(input , modelFlow[i].data);
-        returnArray.push({gptResponse})
-        return gptResponse;
-    }
-
-    else if (modelFlow[i].functionCode === 'TextToAudio') {
-        const speechFile = await textToSpeech(input , modelFlow[i].data);
-        returnArray.push({speechFile})
-        return speechFile;
-    }
-    else if (modelFlow[i].functionCode === 'output') {
-        returnArray.push({output : input})
-        return input;
-    }
-    else if(modelFlow[i].functionCode === 'TextToImage'){
-        const {revisedPrompt ,url} = await textToImage(input , modelFlow[i].data.n , modelFlow[i].data.size);
-        returnArray.push({revisedPrompt , imageUrl : url});
-        return dallEResponse;
-    }
-    
-}
 
 const textToSpeech =async (input , voice)=>{
     if(!input){
@@ -83,9 +58,12 @@ const saveCoordinates = asyncHandler(async(req, res) =>{
 
 })
 
+
+
 const useModel = asyncHandler(async(req, res) => {
     try {
-        const {modelId , userSecret} = req.query;
+        const {modelId , userSecret } = req.query;
+       
         const {inputText} = req.body;
         const user = await User.findOne({userSecret})
         if(!user){
@@ -95,19 +73,16 @@ const useModel = asyncHandler(async(req, res) => {
         if(!model){
             throw new APIError(404 , "Invalid modelId.")
         }
-        const modelFlow = model.modelFlow;
-        var returnArray = []
-        var output = await callFunction(modelFlow ,inputText ,0 ,returnArray);
-        for(let i=1 ; i<modelFlow.length ; i++){
-            const currentCall = await callFunction(modelFlow , output ,i,returnArray)
-            output = currentCall
-        }
+        const {modelFlow , nodeInfo} = model;
+        
+        const outputs = await usingModels(modelFlow ,nodeInfo , inputText)
+        
         return res
         .status(200)
         .json(
             new ApiResponse(
                 200,
-                returnArray,
+                outputs,
                 "Model called successfully."
             )
         )        
@@ -119,23 +94,16 @@ const useModel = asyncHandler(async(req, res) => {
 
 const getModels = asyncHandler(async(req, res) =>{
     try {
-        const userId = req.user._id;
-        if(!userId){
-            throw new APIError(401 , "Unauthorized request.")
-        }
-        const models = await UserAIModel.find({userId});
+        
 
-        if(models.lenght === 0){
-            return res.status(200).json(
-                new ApiResponse(200 ,{} , "Please deploy models to access them")
-            )
+        const models=await UserAIModel.find({userId:req.loggedinUser._id})
+       // console.log(models)
+        if(models.length === 0){
+            return res.status(200).json(new ApiResponse(200 ,{} , "Nothing to show"))
         }
-        return res
-        .status(200)
-        .json(
-            new ApiResponse(200 , models , "User's ai models fetched successfully.")
-        )
 
+        return res.status(200).json(new ApiResponse(200 , models , "User's ai models fetched successfully."))
+      
     } catch (error) {
         throw new APIError(500 , "Something went wrong while fetchin your ai models.")
     }
@@ -145,6 +113,7 @@ const getModel = asyncHandler(async(req, res) =>{
     try {
         const modelId = req.query.modelId;
         const model = await UserAIModel.findById({_id : modelId})
+        //console.log(model)
         if(!model){
             throw new APIError(404 , "Model not found.")
         }
@@ -161,8 +130,9 @@ const getModel = asyncHandler(async(req, res) =>{
 const getModelAxes = asyncHandler(async(req, res) =>{
     try {
         const modelId = req.query.modelId;
-        console.log(modelId)
+       // console.log(modelId)
         const modelAxes = await ModelCoordinate.findOne({modelId})
+        //console.log(modelAxes)
         if(!modelAxes){
             throw new APIError(404 , "Model not found.")
         }

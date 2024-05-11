@@ -1,24 +1,52 @@
-const modelDescriptionArray = (dropArray  , mapArray) =>{
-    var orderArray = new Array(dropArray.length);
-    for(let i=0 ; i<mapArray.length ; i++){
-        orderArray[i] = mapArray[i].key
-        orderArray[i+1] = mapArray[i].value;
-    }
-    var modelDetailsArray = []
-    for(let i=0 ; i<orderArray.length ; i++){
-        var obj = dropArray.find(a => a.key == orderArray[i]);
-        var functionCode = obj.value;
-        if(functionCode === 'gptNode' || functionCode === 'TextToAudio' || functionCode === 'TextToImage'){
-            var data = obj.data;
-            modelDetailsArray.push({
-                functionCode, data
-            })
-        }else{
-            modelDetailsArray.push({functionCode : functionCode})
-        }
-    }
-    
-    return modelDetailsArray;
+function findPath(adjacencyList, startNode, endNode) {
+  const paths = [];
+  
+  const stack = [[startNode]];
+  
+  while (stack.length > 0) {
+      const currentPath = stack.pop();
+      
+      const currentNode = currentPath[currentPath.length - 1];
+      
+      if (currentNode === endNode) {
+          paths.push(currentPath);
+      } else {
+          if (adjacencyList[currentNode]) {
+              for (const neighbor of adjacencyList[currentNode]) {
+                  const newPath = currentPath.concat(neighbor);
+                  stack.push(newPath);
+              }
+          }
+      }
+  }
+  
+  return paths;
 }
-export default modelDescriptionArray
+
+
+
+ const nodeInfo = (dropArray) =>{
+    const mapping = {};
+
+    dropArray.forEach(item => {
+        const {key , value  ,data} = item;
+        mapping[key] ={functionCode : value , data};
+    })
+    return mapping;
+};
+
+
+
+
+
+export {
+    nodeInfo,
+    findPath
+}
+
+
+
+
+
+
 

@@ -11,18 +11,21 @@ const userSchema = new Schema(
             lowecase: true,
             trim: true, 
         },
-        fullName: {
+        displayName: {
             type: String,
             required: true,
             trim: true, 
             index: true
         },
-        password: {
-            type: String,
-            required: [true, 'Password is required']
-        },
         userSecret : {
             type : String ,
+            required : true
+        },
+        imageUrl : {
+            type : String,
+        },
+        oauthId : {
+            type : String,
             required : true
         }
 
@@ -43,8 +46,8 @@ userSchema.methods.generateAccessToken = function(){
         {
             _id : this._id,
             email : this.email,
-            username : this.username,
-            fullName : this.fullName
+            displayName : this.displayName,
+            userSecret : this.userSecret
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
