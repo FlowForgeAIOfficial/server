@@ -7,34 +7,6 @@ import getStartEndNode from "../utils/openAI/getStartEndNode.js";
 import dotenv from 'dotenv'
 dotenv.config()
 
-// const generateModelDescriptionArray = asyncHandler(async(req, res , next) =>{
-   
-//     try {
-//         const {dropArray , mapArray , modelDescription } = req.body;
-//         console.log({
-//             dropArray , mapArray , modelDescription 
-//         })
-//         console.log(1);
-//         const modelFound = await UserAIModel.findOne({modelDescription})
-//         if(modelFound){
-//             throw new APIError(405 , "Model already deployed.")
-//         }
-//         console.log(2);
-//         if(!dropArray || !mapArray){
-//             throw new APIError(400 , "Please create a model to deploy.")
-//         }
-//         console.log(3);
-//         const modelArray = modelDescriptionArray(dropArray , mapArray);
-//         console.log(modelArray);
-//         console.log(4);
-//         req.modelFlow = modelArray;
-//         next();
-//     } catch (error) {
-//         throw new APIError(500, "Cannot get model data flow.")
-//     }
-
-// });
-
 
 const generateModelUrl = asyncHandler(async(req, res , next) =>{
     try {

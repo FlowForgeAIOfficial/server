@@ -8,6 +8,8 @@ import googleOAuthRouter from "./routes/google.routes.js"
 import githubOAuthRouter from "./routes/github.routes.js"
 import passport from "passport"
 import { verifyUser } from "./middlewares/auth.middleware.js"
+import { ApiResponse } from "./utils/ApiResponse.js"
+import { APIError } from "openai"
 
 const app = express()
 
@@ -40,11 +42,21 @@ app.use('/',githubOAuthRouter)
 
 app.post('/logout', verifyUser, function(req, res) {
 
+    try {
         req.session = null;
         res.clearCookie('session'); // Clear session cookie
-       
-        res.status(200).json({message:'Logged out'});
+        
+        res.status(200).json(
+            new ApiResponse(
+                200 , 
+                {},
+                "Logged out"
+            )
+        );
+    } catch (error) {
+        throw new APIError(500 , error , "Something went wrong")
+    }
       
     
-  });
+});
 export { app }
