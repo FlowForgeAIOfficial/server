@@ -149,6 +149,7 @@ const getModelAxes = asyncHandler(async(req, res) =>{
 const deleteModel = asyncHandler(async(req , res) =>{
     try {
         const modelId = req.query.modelId;
+       // console.log(modelId)
         await UserAIModel.findByIdAndDelete(modelId);
         await ModelCoordinate.deleteOne({modelId})
         return res
